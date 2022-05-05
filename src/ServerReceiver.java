@@ -75,19 +75,22 @@ public class ServerReceiver {
 
                 System.out.println("\nType of incoming data :" +  incomingType);
 
-                long incomingChecksum = (long) jsonObject.get("checksum");
                 String incomingResponse = jsonObject.containsKey("content") ? (String) jsonObject.get("content") : "";
 
-                String checksum_sequence = incomingType + incomingResponse;
-                var crc32 = new CRC32();
-                crc32.update(checksum_sequence.getBytes());
-                long checksumCal = crc32.getValue();
+                if(jsonObject.containsKey("checksum")) {
+                    long incomingChecksum = (long) jsonObject.get("checksum");
 
-                if(incomingChecksum != checksumCal){
-                    System.out.println("Checksums do not match");
-                    throw new Exception("Checksums do not match");
-                } else {
-                    System.out.println("Checksums match");
+                    String checksum_sequence = incomingType + incomingResponse;
+                    var crc32 = new CRC32();
+                    crc32.update(checksum_sequence.getBytes());
+                    long checksumCal = crc32.getValue();
+
+                    if (incomingChecksum != checksumCal) {
+                        System.out.println("Checksums do not match");
+                        throw new Exception("Checksums do not match");
+                    } else {
+                        System.out.println("Checksums match");
+                    }
                 }
 
             } catch (Exception ex) {
@@ -307,7 +310,7 @@ public class ServerReceiver {
     }
 
     public static void receiveAck(InetAddress receiverAddress, Integer port) throws IOException {
-        byte[] buffer = new byte[256];
+        byte[] buffer = new byte[1024];
 
         var incomingPacket = new DatagramPacket(
                 buffer,
@@ -329,6 +332,7 @@ public class ServerReceiver {
             JSONParser jsonParser = new JSONParser();
 
             Object object = jsonParser.parse(messageResponse);
+
             JSONObject jsonObject = (JSONObject) object;
             String incomingType = (String) jsonObject.get("type");
             System.out.println("\nJSON Type of incoming data ---  " + incomingType);
