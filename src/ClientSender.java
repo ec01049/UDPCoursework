@@ -132,7 +132,7 @@ public class ClientSender {
 
             data.put("checksum", checksumSync);
 
-            String message = data.toJSONString();
+            JSONObject message = data;
 
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
@@ -150,7 +150,7 @@ public class ClientSender {
 
             key.put("checksum", checksumKey);
 
-            message = key.toJSONString();
+            message = key;
 
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
@@ -169,7 +169,7 @@ public class ClientSender {
 
             request.put("checksum", checksumRequest);
 
-            message = request.toJSONString();
+            message = request;
 
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
@@ -204,7 +204,7 @@ public class ClientSender {
             long checksumMessage = checksum_calculator(checkMessage);
 
             greeting.put("checksum", checksumMessage);
-            message = greeting.toJSONString();
+            message = greeting;
 
             System.out.println("\nSending message:" + fullGreeting);
 
@@ -223,7 +223,7 @@ public class ClientSender {
             long checksumFin = checksum_calculator(checkFin);
 
             finish.put("checksum", checksumFin);
-            message = finish.toJSONString();
+            message = finish;
 
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
@@ -234,9 +234,10 @@ public class ClientSender {
 
     }
 
-    public void sendData(DatagramSocket socket, String message, InetAddress receiverAddress, Integer port) throws IOException, BadPaddingException, IllegalBlockSizeException {
+    public void sendData(DatagramSocket socket, JSONObject message, InetAddress receiverAddress, Integer port) throws IOException, BadPaddingException, IllegalBlockSizeException {
 
-        var messageBuffer = message.getBytes(StandardCharsets.ISO_8859_1);
+        String toSend = message.toJSONString();
+        var messageBuffer = toSend.getBytes(StandardCharsets.ISO_8859_1);
 
         try {
             // Setting the Receiver address and establishing a socket connection
@@ -249,8 +250,13 @@ public class ClientSender {
             ));
 
 
-
+            System.out.println("Awaiting Ack");
             receiveAck(receiverAddress, port);
+
+            if(message.get("type") == "sync"){
+                return;
+            }
+
 
             byte[] buffer = new byte[1024];
 
@@ -319,8 +325,11 @@ public class ClientSender {
                             .replace("-----END RSA PUBLIC KEY-----", "");
 
 
-                    byte[] encoded = Base64.getDecoder().decode(publicKeyPEM.getBytes());
-                    org.bouncycastle.asn1.pkcs.RSAPublicKey pkcs1PublicKey = org.bouncycastle.asn1.pkcs.RSAPublicKey.getInstance(encoded);
+                    //byte[] decoded = Base64.getDecoder().decode(publicKeyPEM.getBytes());
+
+                    byte [] decoded = Base64.getMimeDecoder().decode(publicKeyPEM.getBytes(StandardCharsets.ISO_8859_1));
+
+                    org.bouncycastle.asn1.pkcs.RSAPublicKey pkcs1PublicKey = org.bouncycastle.asn1.pkcs.RSAPublicKey.getInstance(decoded);
                     BigInteger modulus = pkcs1PublicKey.getModulus();
                     BigInteger publicExponent = pkcs1PublicKey.getPublicExponent();
                     RSAPublicKeySpec keySpec = new RSAPublicKeySpec(modulus, publicExponent);
@@ -421,7 +430,7 @@ public class ClientSender {
             Object object = jsonParser.parse(messageResponse);
             JSONObject jsonObject = (JSONObject) object;
             String incomingType = (String) jsonObject.get("type");
-            System.out.println("\nJSON Type of incoming data ---  " + incomingType);
+            System.out.println("\nACK Received ---  " + incomingType);
 
             if(!incomingType.equals("ack")){
                 throw new SocketException();

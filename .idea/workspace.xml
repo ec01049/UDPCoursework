@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="99a78c24-1a07-47ef-ab97-f934aa91060c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ClientSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClientSender.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ServerReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ServerReceiver.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,7 +36,7 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
   </component>
-  <component name="RunManager" selected="Application.ClientSender">
+  <component name="RunManager" selected="Application.ServerReceiver">
     <configuration name="ClientSender" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ClientSender" />
       <module name="UDPCoursework_6581764" />
@@ -52,8 +53,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ServerReceiver" />
         <item itemvalue="Application.ClientSender" />
+        <item itemvalue="Application.ServerReceiver" />
       </list>
     </recent_temporary>
   </component>
@@ -75,22 +76,22 @@
       <screen x="0" y="0" width="1536" height="816" />
     </state>
     <state x="473" y="150" key="FileChooserDialogImpl/0.0.1536.816@0.0.1536.816" timestamp="1651706715341" />
-    <state width="1493" height="258" key="GridCell.Tab.0.bottom" timestamp="1651769179384">
+    <state width="1493" height="217" key="GridCell.Tab.0.bottom" timestamp="1651782427732">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="258" key="GridCell.Tab.0.bottom/0.0.1536.816@0.0.1536.816" timestamp="1651769179384" />
-    <state width="1493" height="258" key="GridCell.Tab.0.center" timestamp="1651769179384">
+    <state width="1493" height="217" key="GridCell.Tab.0.bottom/0.0.1536.816@0.0.1536.816" timestamp="1651782427732" />
+    <state width="1493" height="217" key="GridCell.Tab.0.center" timestamp="1651782427731">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="258" key="GridCell.Tab.0.center/0.0.1536.816@0.0.1536.816" timestamp="1651769179384" />
-    <state width="1493" height="258" key="GridCell.Tab.0.left" timestamp="1651769179384">
+    <state width="1493" height="217" key="GridCell.Tab.0.center/0.0.1536.816@0.0.1536.816" timestamp="1651782427731" />
+    <state width="1493" height="217" key="GridCell.Tab.0.left" timestamp="1651782427730">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="258" key="GridCell.Tab.0.left/0.0.1536.816@0.0.1536.816" timestamp="1651769179384" />
-    <state width="1493" height="258" key="GridCell.Tab.0.right" timestamp="1651769179384">
+    <state width="1493" height="217" key="GridCell.Tab.0.left/0.0.1536.816@0.0.1536.816" timestamp="1651782427730" />
+    <state width="1493" height="217" key="GridCell.Tab.0.right" timestamp="1651782427731">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="258" key="GridCell.Tab.0.right/0.0.1536.816@0.0.1536.816" timestamp="1651769179384" />
+    <state width="1493" height="217" key="GridCell.Tab.0.right/0.0.1536.816@0.0.1536.816" timestamp="1651782427731" />
     <state x="249" y="0" key="SettingsEditor" timestamp="1651706717134">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
@@ -99,9 +100,9 @@
       <screen x="0" y="0" width="1536" height="816" />
     </state>
     <state x="475" y="37" key="refactoring.ChangeSignatureDialog/0.0.1536.816@0.0.1536.816" timestamp="1651759742152" />
-    <state x="425" y="62" width="672" height="676" key="search.everywhere.popup" timestamp="1651768951234">
+    <state x="425" y="62" width="672" height="676" key="search.everywhere.popup" timestamp="1651773385974">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="425" y="62" width="672" height="676" key="search.everywhere.popup/0.0.1536.816@0.0.1536.816" timestamp="1651768951234" />
+    <state x="425" y="62" width="672" height="676" key="search.everywhere.popup/0.0.1536.816@0.0.1536.816" timestamp="1651773385974" />
   </component>
 </project>
