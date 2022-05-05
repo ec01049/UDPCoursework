@@ -9,10 +9,12 @@ import java.io.StringWriter;
 import java.math.BigInteger;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.security.*;
 import java.security.spec.RSAPublicKeySpec;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.zip.CRC32;
 
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -107,7 +109,7 @@ public class ClientSender {
 
             try {
                 // Setting a timeout
-                clientSocket.setSoTimeout(1000);
+                clientSocket.setSoTimeout(10000);
             } catch (SocketException ex) {
                 System.err.println(
                         "Failed to set time out"
@@ -123,7 +125,14 @@ public class ClientSender {
             Map<String, String> map = new HashMap<>();
             map.put("type", "sync");
             JSONObject data = new JSONObject(map);
-            String message = data.toString();
+
+            String checkSync = (String) data.get("type");
+            long checksumSync = checksum_calculator(checkSync);
+
+
+            data.put("checksum", checksumSync);
+
+            String message = data.toJSONString();
 
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
@@ -135,6 +144,12 @@ public class ClientSender {
             System.out.println("\nExchanging Public Key...");
             key.put("type", "sender_public_key");
             key.put("content", pemString);
+
+            String checkKey = (String) data.get("type") + (String) data.get("content");
+            long checksumKey = checksum_calculator(checkKey);
+
+            key.put("checksum", checksumKey);
+
             message = key.toJSONString();
 
             // Tries to send JSON Payload to the address
@@ -148,6 +163,12 @@ public class ClientSender {
 
             JSONObject request = new JSONObject();
             request.put("type", "request_username");
+
+            String checkRequest = (String) data.get("type");
+            long checksumRequest = checksum_calculator(checkRequest);
+
+            request.put("checksum", checksumRequest);
+
             message = request.toJSONString();
 
             // Tries to send JSON Payload to the address
@@ -178,6 +199,11 @@ public class ClientSender {
             JSONObject greeting = new JSONObject();
             greeting.put("type", "message");
             greeting.put("content", encodedMessage);
+
+            String checkMessage = (String) data.get("type") + (String) data.get("content");
+            long checksumMessage = checksum_calculator(checkMessage);
+
+            greeting.put("checksum", checksumMessage);
             message = greeting.toJSONString();
 
             System.out.println("\nSending message:" + fullGreeting);
@@ -192,6 +218,11 @@ public class ClientSender {
 
             JSONObject finish = new JSONObject();
             finish.put("type", "fin");
+
+            String checkFin = (String) data.get("type");
+            long checksumFin = checksum_calculator(checkFin);
+
+            finish.put("checksum", checksumFin);
             message = finish.toJSONString();
 
             // Tries to send JSON Payload to the address
@@ -221,7 +252,7 @@ public class ClientSender {
 
             receiveAck(receiverAddress, port);
 
-            byte[] buffer = new byte[512];
+            byte[] buffer = new byte[1024];
 
             var incomingPacket = new DatagramPacket(
                     buffer,
@@ -238,7 +269,6 @@ public class ClientSender {
                     StandardCharsets.ISO_8859_1
             );
 
-
             String incomingType = null;
 
 
@@ -250,9 +280,25 @@ public class ClientSender {
                 incomingType = (String) jsonObject.get("type");
                 System.out.println("\nJSON Type of incoming data ---  " + incomingType);
 
-                if (incomingType.equals("message")) {
-                    String incomingResponse = (String) jsonObject.get("content");
+                String incomingResponse = jsonObject.containsKey("content") ? (String) jsonObject.get("content") : "";
 
+                if(jsonObject.containsKey("checksum")) {
+                    long incomingChecksum = (long) jsonObject.get("checksum");
+
+                    String checksum_sequence = incomingType + incomingResponse;
+                    var crc32 = new CRC32();
+                    crc32.update(checksum_sequence.getBytes());
+                    long checksumCal = crc32.getValue();
+
+                    if (incomingChecksum != checksumCal) {
+                        System.out.println("Checksums do not match");
+                        throw new Exception("Checksums do not match");
+                    } else {
+                        System.out.println("Checksums match");
+                    }
+                }
+
+                if (incomingType.equals("message")) {
 
                     byte[] decodedResponse = Base64.getDecoder().decode(incomingResponse.getBytes(StandardCharsets.ISO_8859_1));
 
@@ -280,6 +326,7 @@ public class ClientSender {
                     RSAPublicKeySpec keySpec = new RSAPublicKeySpec(modulus, publicExponent);
                     KeyFactory keyFactory = KeyFactory.getInstance("RSA");
                     this.recipientKey = keyFactory.generatePublic(keySpec);
+                    System.out.println("Received Recipient Key");
 
                 }
 
@@ -327,6 +374,7 @@ public class ClientSender {
             ex.printStackTrace();
         }
     }
+
 
     public static void sendAck(InetAddress address, Integer port){
 
@@ -429,6 +477,14 @@ public class ClientSender {
 
 
         return encryptedGreeting;
+    }
+
+    private static long checksum_calculator(String json){
+        var crc32 = new CRC32();
+
+        crc32.update(json.getBytes());
+
+        return crc32.getValue();
     }
 
 }

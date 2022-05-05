@@ -19,6 +19,7 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.CRC32;
 
 // NEED TO INSTALL BouncyCastle AND JSONSimple in order for code to work.
 
@@ -73,6 +74,21 @@ public class ServerReceiver {
                 incomingType = (String) jsonObject.get("type");
 
                 System.out.println("\nType of incoming data :" +  incomingType);
+
+                long incomingChecksum = (long) jsonObject.get("checksum");
+                String incomingResponse = jsonObject.containsKey("content") ? (String) jsonObject.get("content") : "";
+
+                String checksum_sequence = incomingType + incomingResponse;
+                var crc32 = new CRC32();
+                crc32.update(checksum_sequence.getBytes());
+                long checksumCal = crc32.getValue();
+
+                if(incomingChecksum != checksumCal){
+                    System.out.println("Checksums do not match");
+                    throw new Exception("Checksums do not match");
+                } else {
+                    System.out.println("Checksums match");
+                }
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -171,16 +187,26 @@ public class ServerReceiver {
             System.out.println("\nConnection Initiated, Awaiting Ack");
             JSONObject data = new JSONObject();
             data.put("type", "sync");
+
+            long checksumSync = checksum_calculator((String) data.get("type"));
+
+            data.put("checksum", checksumSync);
+
             response = data.toJSONString();
 
         } else if(incomingType.equals("sender_public_key")){
             System.out.println("\nReceived Sender Public Key");
             System.out.println("\nExchanging Receiver Public Key...");
 
-            JSONObject data = new JSONObject();
-            data.put("type", "recipient_public_key");
-            data.put("content", getPem());
-            response = data.toJSONString();
+            JSONObject key = new JSONObject();
+            key.put("type", "recipient_public_key");
+            key.put("content", getPem());
+
+            long checksumKey = checksum_calculator((String) key.get("type") + (String) key.get("content"));
+
+            key.put("checksum", checksumKey);
+
+            response = key.toJSONString();
 
 
         } else if (incomingType.equals("request_username")) {
@@ -195,6 +221,11 @@ public class ServerReceiver {
             usernameData.put("content", encodedUsername);
 
             System.out.println("\nSending username...");
+
+            long checksumUser = checksum_calculator((String) usernameData.get("type") + (String) usernameData.get("content"));
+
+            usernameData.put("checksum", checksumUser);
+
             response = usernameData.toJSONString();
 
 
@@ -208,14 +239,24 @@ public class ServerReceiver {
             JSONObject greetingData = new JSONObject();
             greetingData.put("type", "message");
             greetingData.put("content", encodedResponse);
+
+            long checksumGreet = checksum_calculator((String) greetingData.get("type") + (String) greetingData.get("content"));
+
+            greetingData.put("checksum", checksumGreet);
+
             response = greetingData.toJSONString();
 
         } else if (incomingType.equals("fin")) {
             System.out.println("\nRequest to close connection");
 
-            JSONObject data = new JSONObject();
-            data.put("type", "fin");
-            response = data.toJSONString();
+            JSONObject fin = new JSONObject();
+            fin.put("type", "fin");
+
+            long checksumFin = checksum_calculator((String) fin.get("type"));
+
+            fin.put("checksum", checksumFin);
+
+            response = fin.toJSONString();
 
         }
 
@@ -227,6 +268,7 @@ public class ServerReceiver {
                     address,
                     port
             ));
+
         } catch (IOException ex) {
             System.out.println("Could not send response");
             ex.printStackTrace();
@@ -292,7 +334,7 @@ public class ServerReceiver {
             System.out.println("\nJSON Type of incoming data ---  " + incomingType);
 
             if(!incomingType.equals("ack")){
-                throw new SocketException();
+                throw new Exception("Ack not Received");
             }
 
         } catch(Exception ex) {
@@ -370,6 +412,14 @@ public class ServerReceiver {
 
         return pemString;
 
+    }
+
+    private static long checksum_calculator(String json){
+        var crc32 = new CRC32();
+
+        crc32.update(json.getBytes());
+
+        return crc32.getValue();
     }
 
 }
