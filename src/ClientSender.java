@@ -144,7 +144,13 @@ public class ClientSender {
             JSONObject message = data;
 
             // Tries to send JSON Payload to the address
-            sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+            try {
+                sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+            } catch(IOException e){
+                System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                e.printStackTrace();
+                return;
+            }
 
             /*
             Exchanging Public Key
@@ -163,8 +169,14 @@ public class ClientSender {
 
             message = key;
 
+            try {
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+            } catch(IOException e){
+                System.err.println("Error! cannot establish connection with current IP, moving onto next address");
+                e.printStackTrace();
+                return;
+            }
 
             /*
             Sending a request for recipient username
@@ -182,8 +194,14 @@ public class ClientSender {
 
             message = request;
 
+            try {
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+            } catch(IOException e){
+                System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                e.printStackTrace();
+                return;
+            }
 
             /*
             Sending greeting message
@@ -220,7 +238,13 @@ public class ClientSender {
             System.out.println("\nSending message:" + fullGreeting);
 
             // Tries to send JSON Payload to the address
-            sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+            try {
+                sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+            } catch (IOException e){
+                System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                e.printStackTrace();
+                return;
+            }
 
 
             /*
@@ -238,8 +262,13 @@ public class ClientSender {
 
             System.out.println("\nRequest to close connection...");
             // Tries to send JSON Payload to the address
-            sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
-
+            try{
+                sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+            } catch (IOException e){
+                System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                e.printStackTrace();
+                return;
+            }
 
         }
 
@@ -251,7 +280,7 @@ public class ClientSender {
         String toSend = message.toJSONString();
         var messageBuffer = toSend.getBytes(StandardCharsets.ISO_8859_1);
 
-        try {
+      //  try {
             // Setting the Receiver address and establishing a socket connection
             // Attempts to send data to recipient
             clientSocket.send(new DatagramPacket(
@@ -374,6 +403,7 @@ public class ClientSender {
 
             } catch (Exception ex) {
                 ex.printStackTrace();
+                return;
             }
 
             if (incomingType.equals("sync")) {
@@ -381,16 +411,13 @@ public class ClientSender {
                 return;
             }
 
-
+/*
         } catch (IOException ex) {
             // If we encounter an IOException, it means there was a
             // problem communicating (IO = Input/Output) so we'll log
             // the error.
-            System.err.println(
-                    "Error, cannot establish connection with current IP, moving on to next address\n\n."
-            );
-            ex.printStackTrace();
-        }
+
+ */
     }
 
 
