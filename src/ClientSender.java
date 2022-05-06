@@ -9,7 +9,6 @@ import java.io.StringWriter;
 import java.math.BigInteger;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.security.*;
 import java.security.spec.RSAPublicKeySpec;
 import java.time.LocalTime;
@@ -91,14 +90,16 @@ public class ClientSender {
             // Change IP address to list of IPs
             String UDP_IP_ADDRESS = recipientIPs[i];
 
-
             try {
                 // IP is legal is passes
                 receiverAddress = InetAddress.getByName(UDP_IP_ADDRESS);
+                InetAddress.getByName(UDP_IP_ADDRESS).getAddress().equals(UDP_IP_ADDRESS);
+
             } catch (UnknownHostException e) {
                 System.err.println("The IP" + UDP_IP_ADDRESS + "is invalid");
                 e.printStackTrace();
             }
+
             try {
                 clientSocket = new DatagramSocket();
 
@@ -145,8 +146,10 @@ public class ClientSender {
             key.put("type", "sender_public_key");
             key.put("content", pemString);
 
-            String checkKey = (String) data.get("type") + (String) data.get("content");
+            String checkKey = (String) key.get("type") + (String) key.get("content");
+
             long checksumKey = checksum_calculator(checkKey);
+
 
             key.put("checksum", checksumKey);
 
@@ -164,7 +167,7 @@ public class ClientSender {
             JSONObject request = new JSONObject();
             request.put("type", "request_username");
 
-            String checkRequest = (String) data.get("type");
+            String checkRequest = (String) request.get("type");
             long checksumRequest = checksum_calculator(checkRequest);
 
             request.put("checksum", checksumRequest);
@@ -200,7 +203,7 @@ public class ClientSender {
             greeting.put("type", "message");
             greeting.put("content", encodedMessage);
 
-            String checkMessage = (String) data.get("type") + (String) data.get("content");
+            String checkMessage = (String) greeting.get("type") + (String) greeting.get("content");
             long checksumMessage = checksum_calculator(checkMessage);
 
             greeting.put("checksum", checksumMessage);
@@ -210,7 +213,7 @@ public class ClientSender {
 
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
-            System.out.println("Greeting Sent");
+
 
             /*
             Ending connection with current recipient
@@ -219,12 +222,13 @@ public class ClientSender {
             JSONObject finish = new JSONObject();
             finish.put("type", "fin");
 
-            String checkFin = (String) data.get("type");
+            String checkFin = (String) finish.get("type");
             long checksumFin = checksum_calculator(checkFin);
 
             finish.put("checksum", checksumFin);
             message = finish;
 
+            System.out.println("\nRequest to close connection...");
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
 
@@ -254,6 +258,12 @@ public class ClientSender {
             receiveAck(receiverAddress, port);
 
             if(message.get("type") == "sync"){
+                return;
+            }
+
+            if(message.get("type") == "fin"){
+                System.out.println("\nConnection Terminated");
+                clientSocket.close();
                 return;
             }
 
@@ -363,15 +373,6 @@ public class ClientSender {
                 return;
             }
 
-            if (incomingType.equals("recipient_public_key")){
-                System.out.println("\nReceived Recipient Public Key");
-            }
-
-
-            if (incomingType.equals("fin")) {
-                System.out.println("\nConnection Terminated");
-                socket.close();
-            }
 
         } catch (IOException ex) {
             // If we encounter an IOException, it means there was a
@@ -389,6 +390,9 @@ public class ClientSender {
 
         JSONObject data = new JSONObject();
         data.put("type", "ack");
+        String checkKey = (String) data.get("type");
+        long checksumKey = checksum_calculator(checkKey);
+        data.put("checksum", checksumKey);
         String ack = data.toJSONString();
 
         var responseBuffer = ack.getBytes(StandardCharsets.ISO_8859_1);
@@ -403,7 +407,7 @@ public class ClientSender {
             System.out.println("Could not send ACK");
             ex.printStackTrace();
         }
-        System.out.println("Sent Ack");
+        System.out.println("\nSent Ack");
     }
 
     public static void receiveAck(InetAddress receiverAddress, Integer port) throws IOException {
@@ -430,7 +434,7 @@ public class ClientSender {
             Object object = jsonParser.parse(messageResponse);
             JSONObject jsonObject = (JSONObject) object;
             String incomingType = (String) jsonObject.get("type");
-            System.out.println("\nACK Received ---  " + incomingType);
+            System.out.println("JSON Type of incoming data ---  " + incomingType);
 
             if(!incomingType.equals("ack")){
                 throw new SocketException();

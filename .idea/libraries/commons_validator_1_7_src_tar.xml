@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="commons-validator-1.7-src.tar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Downloads/commons-validator-1.7-src.tar.zip!/" />
+      <root url="jar://$PROJECT_DIR$/../Downloads/commons-validator-1.7-bin.tar.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="jar://$PROJECT_DIR$/../Downloads/commons-validator-1.7-src.tar.zip!/" recursive="false" />
+  </library>
+</component>

@@ -17,8 +17,6 @@ import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.RSAPublicKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,7 +100,6 @@ public class ServerReceiver {
 
             if (incomingType != null) {
 
-                System.out.println("Sending Ack..");
                 sendAck(clientSenderAddress, clientPort);
 
                 sendResponse(incomingType, clientSenderAddress, clientPort);
@@ -121,7 +118,6 @@ public class ServerReceiver {
         byte[] buffer = new byte[2048];
         var incomingPacket = new DatagramPacket(buffer, buffer.length);
         receiverSocket.receive(incomingPacket);
-        System.out.println("Incoming package is " + incomingPacket);
 
         var clientSenderAddress = incomingPacket.getAddress();
         var clientPort = incomingPacket.getPort();
@@ -132,7 +128,7 @@ public class ServerReceiver {
                 incomingPacket.getLength(),
                 StandardCharsets.ISO_8859_1
         );
-        System.out.println("Incoming package data is " + incomingPacket.getData());
+        //System.out.println("Incoming package data is " + incomingPacket.getData());
 
         String incomingType = null;
 
@@ -144,7 +140,7 @@ public class ServerReceiver {
             JSONObject jsonObject = (JSONObject) object;
             incomingType = (String) jsonObject.get("type");
 
-            System.out.println("JSON Object " + jsonObject);
+            //System.out.println("JSON Object " + jsonObject);
             System.out.println("\nType of incoming data :" +  incomingType);
 
 
@@ -159,31 +155,7 @@ public class ServerReceiver {
 
             }
             if(incomingType.equals("sender_public_key")){
-                System.out.println("Received Sender Public Key");
                 String senderKey = jsonObject.get("content").toString();
-                System.out.println("KEY" + senderKey);
-                System.out.println("JSON " + jsonObject);
-
-                /*
-
-
-                byte [] decoded = Base64.getDecoder().decode(senderKey);
-                System.out.println(decoded);
-
-                 */
-
-                /*
-                org.bouncycastle.asn1.pkcs.RSAPublicKey publicKey = org.bouncycastle.asn1.pkcs.RSAPublicKey.getInstance(senderKey.getBytes());
-                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-                BigInteger modulus = publicKey.getModulus();
-                BigInteger publicExponent = publicKey.getPublicExponent();
-                RSAPublicKeySpec keySpec = new RSAPublicKeySpec(modulus, publicExponent);
-                this.senderKey = keyFactory.generatePublic(keySpec);
-                System.out.println(this.senderKey);
-
-                 */
-
-
 
 
                 String senderKeyPEM = senderKey
@@ -192,19 +164,10 @@ public class ServerReceiver {
                         .replace("-----END RSA PUBLIC KEY-----", "");
 
 
-                System.out.println("Pem Key " + senderKeyPEM);
-                System.out.println("Regular key?: " + senderKey);
 
-//                byte[] encoded = senderKeyPEM.getBytes("UTF8");
-//                System.out.println(Arrays.toString(encoded));
                 byte [] decoded = Base64.getMimeDecoder().decode(senderKeyPEM.getBytes(StandardCharsets.ISO_8859_1));
                 //Base64.getDecoder().decode(senderKeyPEM.getBytes(StandardCharsets.ISO_8859_1));
 
-                System.out.println(decoded);
-
-//                X509EncodedKeySpec spec = new X509EncodedKeySpec(encoded);
-//                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//                PublicKey key = keyFactory.generatePublic(spec);
 
                 org.bouncycastle.asn1.pkcs.RSAPublicKey pkcs1PublicKey = org.bouncycastle.asn1.pkcs.RSAPublicKey.getInstance(decoded);
                 BigInteger modulus = pkcs1PublicKey.getModulus();
@@ -237,20 +200,7 @@ public class ServerReceiver {
             keepListening();
             return;
         }
-        /*
-        if (incomingType.equals("sync")) {
-                System.out.println("\nConnection Initialised, Sending sync");
-                JSONObject data = new JSONObject();
-                data.put("type", "sync");
 
-
-                long checksumSync = checksum_calculator((String) data.get("type"));
-
-                data.put("checksum", checksumSync);
-
-                response = data.toJSONString();
-
-         */
 
         if(incomingType.equals("sender_public_key")){
             System.out.println("\nExchanging Receiver Public Key...");
@@ -331,14 +281,16 @@ public class ServerReceiver {
             ex.printStackTrace();
         }
 
-        System.out.println("\nAwaiting Ack");
-        receiveAck(address, port);
-
         if(incomingType.equals("fin")){
             System.out.println("Closing Connection...");
             receiverSocket.close();
             return;
         }
+
+        System.out.println("\nAwaiting Ack");
+        receiveAck(address, port);
+
+
 
         keepListening();
     }
@@ -347,6 +299,9 @@ public class ServerReceiver {
 
         JSONObject data = new JSONObject();
         data.put("type", "ack");
+        String checkKey = (String) data.get("type");
+        long checksumKey = checksum_calculator(checkKey);
+        data.put("checksum", checksumKey);
         String ack = data.toJSONString();
 
         var responseBuffer = ack.getBytes(StandardCharsets.ISO_8859_1);
@@ -361,7 +316,7 @@ public class ServerReceiver {
             System.out.println("Could not send ACK");
             ex.printStackTrace();
         }
-        System.out.println("Sent Ack");
+        System.out.println("\nSent Ack");
     }
 
     public static void receiveAck(InetAddress receiverAddress, Integer port) throws IOException {
