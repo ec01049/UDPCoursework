@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="99a78c24-1a07-47ef-ab97-f934aa91060c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/commons_validator_1_7_src_tar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UDPCoursework_6581764.iml" beforeDir="false" afterPath="$PROJECT_DIR$/UDPCoursework_6581764.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/UDPCoursework_6581764/ClientSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/UDPCoursework_6581764/ClientSender.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UDPCoursework_6581764/ServerReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/UDPCoursework_6581764/ServerReceiver.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ClientSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClientSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ServerReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ServerReceiver.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,8 +35,9 @@
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
-  <component name="RunManager" selected="Application.ServerReceiver">
+  <component name="RunManager" selected="Application.ClientSender">
     <configuration name="ClientSender" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ClientSender" />
       <module name="UDPCoursework_6581764" />
@@ -57,8 +54,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ServerReceiver" />
         <item itemvalue="Application.ClientSender" />
+        <item itemvalue="Application.ServerReceiver" />
       </list>
     </recent_temporary>
   </component>
@@ -84,26 +81,30 @@
       <screen x="0" y="0" width="1536" height="816" />
     </state>
     <state x="473" y="150" key="FileChooserDialogImpl/0.0.1536.816@0.0.1536.816" timestamp="1651797042473" />
-    <state width="1493" height="203" key="GridCell.Tab.0.bottom" timestamp="1651797417606">
+    <state width="1493" height="134" key="GridCell.Tab.0.bottom" timestamp="1651871215100">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="203" key="GridCell.Tab.0.bottom/0.0.1536.816@0.0.1536.816" timestamp="1651797417606" />
-    <state width="1493" height="203" key="GridCell.Tab.0.center" timestamp="1651797417606">
+    <state width="1493" height="134" key="GridCell.Tab.0.bottom/0.0.1536.816@0.0.1536.816" timestamp="1651871215100" />
+    <state width="1493" height="134" key="GridCell.Tab.0.center" timestamp="1651871215100">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="203" key="GridCell.Tab.0.center/0.0.1536.816@0.0.1536.816" timestamp="1651797417606" />
-    <state width="1493" height="203" key="GridCell.Tab.0.left" timestamp="1651797417606">
+    <state width="1493" height="134" key="GridCell.Tab.0.center/0.0.1536.816@0.0.1536.816" timestamp="1651871215100" />
+    <state width="1493" height="134" key="GridCell.Tab.0.left" timestamp="1651871215100">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="203" key="GridCell.Tab.0.left/0.0.1536.816@0.0.1536.816" timestamp="1651797417606" />
-    <state width="1493" height="203" key="GridCell.Tab.0.right" timestamp="1651797417606">
+    <state width="1493" height="134" key="GridCell.Tab.0.left/0.0.1536.816@0.0.1536.816" timestamp="1651871215100" />
+    <state width="1493" height="134" key="GridCell.Tab.0.right" timestamp="1651871215100">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="203" key="GridCell.Tab.0.right/0.0.1536.816@0.0.1536.816" timestamp="1651797417606" />
-    <state x="249" y="0" key="SettingsEditor" timestamp="1651797045102">
+    <state width="1493" height="134" key="GridCell.Tab.0.right/0.0.1536.816@0.0.1536.816" timestamp="1651871215100" />
+    <state x="249" y="0" key="SettingsEditor" timestamp="1651870366843">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="249" y="0" key="SettingsEditor/0.0.1536.816@0.0.1536.816" timestamp="1651797045102" />
+    <state x="249" y="0" key="SettingsEditor/0.0.1536.816@0.0.1536.816" timestamp="1651870366843" />
+    <state x="209" y="29" key="new project wizard" timestamp="1651844313866">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="209" y="29" key="new project wizard/0.0.1536.816@0.0.1536.816" timestamp="1651844313866" />
     <state x="475" y="37" key="refactoring.ChangeSignatureDialog" timestamp="1651759742152">
       <screen x="0" y="0" width="1536" height="816" />
     </state>

@@ -89,15 +89,22 @@ public class ClientSender {
 
             // Change IP address to list of IPs
             String UDP_IP_ADDRESS = recipientIPs[i];
+            String PATTERN = "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
+
+            if(!UDP_IP_ADDRESS.matches(PATTERN)) {
+                System.err.println("The IP " + UDP_IP_ADDRESS + " is invalid. Please try again:");
+                start();
+            }
 
             try {
                 // IP is legal is passes
+
                 receiverAddress = InetAddress.getByName(UDP_IP_ADDRESS);
-                InetAddress.getByName(UDP_IP_ADDRESS).getAddress().equals(UDP_IP_ADDRESS);
 
             } catch (UnknownHostException e) {
-                System.err.println("The IP" + UDP_IP_ADDRESS + "is invalid");
+                System.err.println("The IP " + UDP_IP_ADDRESS + " is invalid, Please try again:");
                 e.printStackTrace();
+                start();
             }
 
             try {
@@ -115,6 +122,7 @@ public class ClientSender {
                 System.err.println(
                         "Failed to set time out"
                 );
+                start();
             }
 
             /*
