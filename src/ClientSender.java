@@ -147,9 +147,15 @@ public class ClientSender {
             try {
                 sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
             } catch(IOException e){
-                System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                System.err.println("Attemping again...");
                 e.printStackTrace();
-                return;
+
+                try{
+                    sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+                } catch(IOException er){
+                    System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                    return;
+                }
             }
 
             /*
@@ -173,9 +179,15 @@ public class ClientSender {
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
             } catch(IOException e){
-                System.err.println("Error! cannot establish connection with current IP, moving onto next address");
+                System.err.println("Attemping again...");
                 e.printStackTrace();
-                return;
+
+                try{
+                    sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+                } catch(IOException er){
+                    System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                    return;
+                }
             }
 
             /*
@@ -198,9 +210,15 @@ public class ClientSender {
             // Tries to send JSON Payload to the address
             sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
             } catch(IOException e){
-                System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                System.err.println("Attemping again...");
                 e.printStackTrace();
-                return;
+
+                try{
+                    sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+                } catch(IOException er){
+                    System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                    return;
+                }
             }
 
             /*
@@ -241,9 +259,15 @@ public class ClientSender {
             try {
                 sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
             } catch (IOException e){
-                System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                System.err.println("Attemping again...");
                 e.printStackTrace();
-                return;
+
+                try{
+                    sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+                } catch(IOException er){
+                    System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                    return;
+                }
             }
 
 
@@ -265,9 +289,15 @@ public class ClientSender {
             try{
                 sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
             } catch (IOException e){
-                System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                System.err.println("Attemping again...");
                 e.printStackTrace();
-                return;
+
+                try{
+                    sendData(clientSocket, message, receiverAddress, UDP_PORT_NO);
+                } catch(IOException er){
+                    System.err.println("Error, cannot establish connection with current IP, moving onto next address");
+                    return;
+                }
             }
 
         }
